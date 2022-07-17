@@ -1,3 +1,4 @@
+import json
 from abc import abstractmethod
 from datetime import datetime
 
@@ -15,12 +16,14 @@ class MetaSingleton(type):
 class BaseParser(metaclass=MetaSingleton):
     """Базовый класс для парсеров различных сайтов"""
 
-    def __init__(self, url: str):
+    def __init__(self, url: str, filename: str):
         """
         Конструктор класса BaseParser.
         :param url: адрес сайта для парсинга.
+        :param filename: название файла для сохранения новостей.
         """
         self.__url = url
+        self.__filename = filename
 
     def __str__(self):
         """Строковое представление объекта"""
@@ -40,6 +43,16 @@ class BaseParser(metaclass=MetaSingleton):
         """Setter для url"""
         self.__url = new_url
 
+    @property
+    def filename(self):
+        """Getter для filename"""
+        return self.__filename
+
+    @filename.setter
+    def filename(self, new_filename):
+        """Setter для filename"""
+        self.__filename = new_filename
+
     @abstractmethod
     def collect_data(self, date_from: datetime, date_to: datetime) -> str:
         """
@@ -48,3 +61,11 @@ class BaseParser(metaclass=MetaSingleton):
         :param date_to: дата окончания сбора информации.
         """
         pass
+
+    def _save_data(self, items: list) -> None:
+        """
+        Метод для записи данных в файл.
+        :param items: список новостей для записи.
+        """
+        with open(self.__filename, "w", encoding='utf8') as file:
+            json.dump(items, file, indent=4, ensure_ascii=False)

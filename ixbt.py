@@ -27,7 +27,7 @@ class IxbtParser(BaseParser):
         self._save_data(result)
 
         return f"[SUCCESS] Новости за период {date_from.strftime('%d.%m.%Y')} - " \
-               f"{date_to.strftime('%d.%m.%Y')} собраны в файл ixbt.json"
+               f"{date_to.strftime('%d.%m.%Y')} собраны в файл {self.filename}"
 
     def _get_data(self, date: datetime) -> list:
         """
@@ -77,12 +77,3 @@ class IxbtParser(BaseParser):
             temp_result.append(item_dct)
 
         return temp_result
-
-    @staticmethod
-    def _save_data(items: list) -> None:
-        """
-        Метод для записи данных в файл.
-        :param items: список новостей для записи.
-        """
-        with open(f"ixbt.json", "w", encoding='utf8') as file:
-            json.dump(items, file, indent=4, ensure_ascii=False)
